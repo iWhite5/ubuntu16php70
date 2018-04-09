@@ -9,7 +9,8 @@ COPY docker/nginx.conf /etc/nginx/nginx.conf
 
 
 # PHP
-RUN apt-get install -y php7.0 \
+RUN apt-get update && \
+ apt-get install -y php7.0 \
  php7.0-fpm \
  php7.0-mysql \
  php7.0-cli \
@@ -50,17 +51,22 @@ RUN wget http://robo.li/robo.phar && chmod +x robo.phar && mv robo.phar /usr/loc
 # Supervisor
 RUN apt-get update && apt-get install -y supervisor
 
+# Open up valid ports to listen to outside of the container
 EXPOSE 80 443 8000 8001 8002
 
+# Create the directories to place configuration files
 RUN mkdir -p /run/php
 RUN mkdir -p /etc/iwhite/docker
-RUN mkdir -p /var/www/php/public
+RUN mkdir -p /var/www/php
+# RUN mkdir -p /var/www/php/public
 
-COPY docker/php/docker/nginx /etc/iwhite/docker/nginx
+# COPY docker/php/docker/nginx /etc/iwhite/docker/nginx
 COPY docker/www.conf /etc/php/7.0/fpm/pool.d/www.conf
 COPY docker/supervisord.conf /etc/iwhite/docker/supervisord.conf
 
+# Run the supervisor service. This will allow us to update service files on the fly.
 CMD /usr/bin/supervisord -c /etc/iwhite/docker/supervisord.conf
 
+# Shortcut to get to base directory of application
 RUN echo "alias d='cd /var/www/php'" >> ~/.bashrc
 
