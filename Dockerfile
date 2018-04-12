@@ -7,7 +7,6 @@ RUN apt-get update && apt-get install -y software-properties-common build-essent
 RUN add-apt-repository -y ppa:nginx/stable && apt-get update && apt-get install -y nginx
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 
-
 # PHP
 RUN apt-get update && \
  apt-get install -y php7.0 \
@@ -52,7 +51,7 @@ RUN wget http://robo.li/robo.phar && chmod +x robo.phar && mv robo.phar /usr/loc
 RUN apt-get update && apt-get install -y supervisor
 
 # Open up valid ports to listen to outside of the container
-EXPOSE 80 443 8000 8001 8002
+EXPOSE 80 443 3306 3307 8000 8001 8002
 
 # Create the directories to place configuration files
 RUN mkdir -p /run/php
